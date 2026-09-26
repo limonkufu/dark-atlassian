@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Catppuccin Mocha</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="head">
+    <span class="dot" id="dot" aria-hidden="true"></span>
+    <div class="head-text">
+      <h1>Catppuccin Mocha</h1>
+      <p id="status">Loading…</p>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>Mode</h2>
+    <div class="modes" role="radiogroup" aria-label="Theme mode">
+      <label class="mode"><input type="radio" name="mode" value="schedule"><span>Scheduled</span><small>On at night, off in the day</small></label>
+      <label class="mode"><input type="radio" name="mode" value="on"><span>Always on</span><small>Dark all the time</small></label>
+      <label class="mode"><input type="radio" name="mode" value="off"><span>Always off</span><small>Leave Atlassian light</small></label>
+      <label class="mode"><input type="radio" name="mode" value="system"><span>Follow system</span><small>Match the OS dark mode</small></label>
+    </div>
+    <div class="schedule" id="scheduleBox">
+      <label>From <input type="time" id="start" step="300"></label>
+      <label>To <input type="time" id="end" step="300"></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Apply to</h2>
+    <div class="sites">
+      <label><input type="checkbox" id="siteConfluence"> Confluence</label>
+      <label><input type="checkbox" id="siteJira"> Jira</label>
+    </div>
+  </section>
+
+  <button id="override" class="override" type="button" hidden></button>
+
+  <footer class="foot">
+    <span><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> toggles on a themed tab</span>
+  </footer>
+
+  <script src="../src/schedule.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
