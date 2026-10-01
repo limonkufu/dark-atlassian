@@ -53,8 +53,9 @@ Everything is scoped under `html[data-ctp-mocha]`; removing the attribute restor
 light theme instantly. The last known state and the CSS are cached in `localStorage` so
 pages come up dark without a light flash.
 
-Same-origin iframes (the Confluence editor body, Jira gadgets) are themed both by their
-own copy of the content script and from the parent frame.
+Same-origin iframes (the Confluence editor body, Jira gadgets) are themed by their own
+copy of the content script, which marks the frame's `<html>` with `data-ctp-frame`. The
+parent frame only themes iframes without that mark, so each document is processed once.
 
 ## Files
 

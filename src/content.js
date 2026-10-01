@@ -20,6 +20,7 @@
   const VERSION = chrome.runtime.getManifest().version;
   const STYLE_ID = 'ctp-mocha-theme';
   const INLINE_ID = 'ctp-mocha-inline';
+  const FRAME_ATTR = 'data-ctp-frame';
   const FILES = ['styles/tokens.css', 'styles/aui.css', 'styles/' + site + '.css'];
   const LS_ACTIVE = 'ctpMocha.active';
   const LS_CSS = 'ctpMocha.css.' + site;
@@ -196,10 +197,13 @@
   }
 
   /* Documents we theme: the page itself plus same-origin iframes (editor
-   * bodies, gadgets). Frames also run their own copy of this script, but
-   * document.write()-based editors are safest handled from the parent too. */
+   * bodies, gadgets). Frames run their own copy of this script, which marks
+   * <html> with FRAME_ATTR (claimFrame); the parent keeps out of those and
+   * only covers frames whose copy is missing, e.g. a document.write()-based
+   * editor before its copy has caught up. */
   const docs = new Set([document]);
-  const liveDocs = () => Array.from(docs).filter(d => d.defaultView && d.documentElement);
+  const selfThemed = (d) => d !== document && d.documentElement.hasAttribute(FRAME_ATTR);
+  const liveDocs = () => Array.from(docs).filter(d => d.defaultView && d.documentElement && !selfThemed(d));
 
   function hostIn(doc) {
     if (doc === document) return styleHost();
@@ -456,6 +460,7 @@
     function apply(iframe) {
       const doc = docOf(iframe);
       if (!doc || !doc.documentElement) return;
+      if (selfThemed(doc)) { docs.delete(doc); return; }
       if (active && cssText) {
         docs.add(doc);
         doc.documentElement.setAttribute('data-ctp-mocha', 'true');
@@ -485,6 +490,18 @@
       }
     };
   })();
+
+  /* Inside a frame: mark the document as ours so the parent's copy keeps out
+   * (see liveDocs), and drop whatever that copy already generated here.
+   * Returns true when the mark had to be set: on start-up, or after
+   * document.write() replaced <html> along with everything we had added. */
+  function claimFrame() {
+    const root = document.documentElement;
+    if (isTop || !root || root.hasAttribute(FRAME_ATTR)) return false;
+    root.setAttribute(FRAME_ATTR, '');
+    document.querySelectorAll('style[data-ctp-dyn]').forEach(el => el.remove());
+    return true;
+  }
 
   /* ------------------------------------------------------------------ */
   /* Activation                                                           */
@@ -566,6 +583,7 @@
           const tag = node.tagName;
           if (tag === 'STYLE' || (tag === 'LINK' && /stylesheet/i.test(node.rel || ''))) stylesChanged = true;
           else if (tag === 'HTML' || tag === 'HEAD' || tag === 'BODY') stylesChanged = true;
+          if (tag === 'HTML') claimFrame();   // document.write(): before the parent sees the load
           frames.added(node);
           inline.queue(node);
         }
@@ -584,9 +602,11 @@
     }, true);
 
     if (!isTop) {
-      // Editor iframes are rewritten with document.write(); make sure we survive it.
+      // Editor iframes are rewritten with document.write(); make sure we survive it
+      // (the observer above normally re-claims first; this is the backstop).
       setInterval(() => {
-        if (active && cssText && !document.getElementById(STYLE_ID)) {
+        const reclaimed = claimFrame();
+        if (active && cssText && (reclaimed || !document.getElementById(STYLE_ID))) {
           document.documentElement.setAttribute('data-ctp-mocha', 'true');
           ensureStyle(STYLE_ID, cssText);
           dyn.refresh();
@@ -596,6 +616,7 @@
   }
 
   async function init() {
+    claimFrame();
     // 1. Synchronous fast path from the last known state, to avoid a light flash.
     if (ls.get(LS_ACTIVE) === '1' && ls.get(LS_CSS)) {
       cssText = ls.get(LS_CSS);
