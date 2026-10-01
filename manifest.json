@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Catppuccin Mocha for SKAO Atlassian",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Catppuccin Mocha theme for confluence.skatelescope.org and jira.skatelescope.org, with an optional night-time schedule.",
   "permissions": ["storage", "alarms"],
   "host_permissions": [
