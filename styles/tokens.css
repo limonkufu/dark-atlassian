@@ -667,6 +667,96 @@ html[data-ctp-mocha] {
   --ds-chart-gray-bolder: var(--ctp-overlay2) !important; --ds-chart-gray-bolder-hovered: var(--ctp-subtext0) !important;
   --ds-chart-gray-boldest: var(--ctp-subtext0) !important; --ds-chart-gray-boldest-hovered: var(--ctp-subtext1) !important;
 
+  /* ---------------- Rich Filters gadgets (Qotilabs, --qoti-*) ----------------
+   * Jira dashboards and the Confluence gadget macro. The gadget keeps its own
+   * light/dark palette keyed on html[data-color-mode] and paints rows, borders
+   * and the sticky header through var(--qoti-*), which the dynamic layer cannot
+   * rewrite: every second row (row_stripes_bg) stayed light under light text. */
+  --qoti-color-border: var(--ctp-surface1) !important;
+  --qoti-color-border-subtle: var(--ctp-surface0) !important;
+  --qoti-color-border-bolder: var(--ctp-surface2) !important;
+  --qoti-elevation-shadow-overlay: var(--ctp-shadow) !important;
+  --qoti-elevation-shadow-overlay_on_top: 0 -4px 16px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--ctp-surface1) !important;
+  --qoti-color-invert_for_dark_filter: invert(1) !important;
+  --qoti-color-meta_pill_bg: var(--ctp-surface0) !important;
+  --qoti-color-meta_pill_bg-hover: var(--ctp-surface1) !important;
+  --qoti-color-left_meta_icon: var(--ctp-overlay1) !important;
+  --qoti-color-icon-subtlest: var(--ctp-overlay1) !important;
+  --qoti-color-scrollbar-thumb: var(--ctp-surface2) !important;
+  --qoti-color-scrollbar-thumb_hover: var(--ctp-overlay0) !important;
+  --qoti-color-scrollbar-thumb_hover_subtle: var(--ctp-overlay0) !important;
+  --qoti-color-scrollbar-track: var(--ctp-mantle) !important;
+  --qoti-color-scrollbar-track_border: var(--ctp-surface0) !important;
+  --qoti-color-ff_scrollbar_thumb_opaque: var(--ctp-surface2) !important;
+  --qoti-color-background-neutral-opaque: var(--ctp-surface0) !important;
+  --qoti-color-settings_sidebar: var(--ctp-mantle) !important;
+  --qoti-overlay-bg: color-mix(in srgb, var(--ctp-base) 85%, transparent) !important;
+
+  /* quick-filter controls (pressed state matches .aui-button.active) */
+  --qoti-color-controller-select_menu_shadow: rgba(0, 0, 0, 0.4) !important;
+  --qoti-color-controller-select_menu_operator_button_collapsed_border: var(--ctp-surface1) !important;
+  --qoti-color-controller-select_menu_operator_button_expanded_border: var(--ctp-surface2) !important;
+  --qoti-color-controller-select_menu_operator_button_expanded_shadow: var(--ctp-overlay0) !important;
+  --qoti-color-controller-control_bg: var(--ctp-surface0) !important;
+  --qoti-color-controller-control_bg_hover: var(--ctp-surface1) !important;
+  --qoti-color-controller-control_bg_active: var(--ctp-overlay0) !important;
+  --qoti-color-controller-control_bg_active_hover: var(--ctp-overlay1) !important;
+  --qoti-color-controller-control_color_active: var(--ctp-crust) !important;
+  --qoti-color-controller-control_border: var(--ctp-surface0) !important;
+  --qoti-color-controller-control_border_hover: var(--ctp-surface1) !important;
+  --qoti-color-controller-control_border_active: var(--ctp-overlay0) !important;
+  --qoti-color-controller-control_border_active_hover: var(--ctp-overlay1) !important;
+  --qoti-color-controller-control_border_focus: var(--ctp-blue) !important;
+  --qoti-color-controller-additional_jql_border: var(--ctp-surface1) !important;
+  --qoti-color-controller-reload: var(--ctp-teal) !important;
+  --qoti-color-controller-reload_hover: var(--ctp-sky) !important;
+  --qoti-color-drop_up-border: var(--ctp-surface2) !important;
+  --qoti-color-drop_up-border-hover: var(--ctp-text) !important;
+  --qoti-color-lozenge-border: var(--ctp-surface1) !important;
+  --qoti-color-lozenge-border_hover: var(--ctp-surface2) !important;
+  --qoti-color-rating_star: var(--ctp-yellow) !important;
+  --qoti-color-rich_filter_star: var(--ctp-yellow) !important;
+  --qoti-color-rich_filter_star_hover: var(--ctp-peach) !important;
+
+  /* results table */
+  --qoti-color-table-row_stripes_bg: color-mix(in srgb, var(--ctp-surface0) 50%, var(--ctp-base)) !important;
+  --qoti-color-table-row_stripes_bg_non_opaque: color-mix(in srgb, var(--ctp-surface0) 50%, var(--ctp-base)) !important;
+  --qoti-color-rt_row_bg_highlighted: var(--ctp-tint-yellow) !important;
+  --qoti-color-rt_row_bg_active: var(--ctp-tint-blue) !important;
+  --qoti-color-table-firefox_bg_workaround: var(--ctp-surface0) !important;   /* sticky header */
+  --qoti-color-table-col_total_bg: var(--ctp-mantle) !important;
+  --qoti-color-table-cell_bg_highlighted: color-mix(in srgb, var(--ctp-blue) 12%, transparent) !important;
+  --qoti-color-table-col_bg_hover: color-mix(in srgb, var(--ctp-blue) 8%, transparent) !important;
+  --qoti-color-table-col_bg_hover_opaque: color-mix(in srgb, var(--ctp-blue) 8%, var(--ctp-base)) !important;
+  --qoti-color-table-row_cursor_border: var(--ctp-blue) !important;
+  --qoti-color-table-sort: var(--ctp-overlay0) !important;
+  --qoti-color-table-sort-hover: var(--ctp-overlay2) !important;
+  --qoti-color-table-sort-active: var(--ctp-blue) !important;
+  --qoti-color-table-percentage_bar_bg: var(--ctp-surface1) !important;
+  --qoti-color-table-current_interval_lozenge: var(--ctp-tint-blue) !important;
+  --qoti-color-table-gantt_thead_bg: var(--ctp-surface0) !important;
+  --qoti-color-table-gantt_deps_footer_date_bg: var(--ctp-surface0) !important;
+  --qoti-color-table-gantt_deps_ref_line: var(--ctp-sapphire) !important;
+  --qoti-color-table-gantt_deps_sticky_cancel_bg: linear-gradient(90deg, color-mix(in srgb, var(--ctp-base) 20%, transparent) 0, color-mix(in srgb, var(--ctp-base) 80%, transparent) 10px, var(--ctp-base) 10px) !important;
+  --qoti-color-gantt-weekend_bg: color-mix(in srgb, var(--ctp-text) 5%, transparent) !important;
+  --qoti-color-ia-performed-highlight-full: color-mix(in srgb, var(--ctp-yellow) 30%, var(--ctp-base)) !important;
+  --qoti-color-ia-performed-highlight-fade: transparent !important;
+
+  /* charts */
+  --qoti-color-charts-cartesian: var(--ctp-surface1) !important;
+  --qoti-color-charts-bar_bg: var(--ctp-surface0) !important;
+  --qoti-color-charts-bar_bg_percent_of_total: color-mix(in srgb, var(--ctp-surface0) 72%, transparent) !important;
+  --qoti-color-charts-bar_bg_percent_of_total_hover: color-mix(in srgb, var(--ctp-surface1) 70%, transparent) !important;
+  --qoti-color-charts-axis_fade: color-mix(in srgb, var(--ctp-base) 30%, transparent) !important;
+  --qoti-color-charts-axis: var(--ctp-surface2) !important;
+  --qoti-color-charts-axis_diff_chart: var(--ctp-overlay0) !important;
+  --qoti-color-charts-tick: var(--ctp-overlay1) !important;
+  --qoti-color-charts-ref_line_blue: var(--ctp-blue) !important;
+  --qoti-color-charts-tooltip_default_bg: var(--ctp-crust) !important;
+  --qoti-color-charts-tooltip_default_color: var(--ctp-text) !important;
+  --qoti-color-charts-tooltip_treemap_border: var(--ctp-surface1) !important;
+  --qoti-color-charts-tooltip_color_tag_border: var(--ctp-surface2) !important;
+
   /* ---------------- base document ---------------- */
   &, & body {
     background-color: var(--ctp-base) !important;

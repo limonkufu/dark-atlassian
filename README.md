@@ -37,7 +37,8 @@ Three layers, strongest first:
 
 1. `styles/tokens.css`, `styles/aui.css`, `styles/confluence.css` / `styles/jira.css`
    Hand-written Catppuccin rules. Atlassian's own design tokens (`--aui-*` and `--ds-*`)
-   are overridden at the root, which themes most AUI components in one go, plus explicit
+   and the Rich Filters gadget palette (`--qoti-*`) are overridden at the root, which
+   themes most AUI components and filter gadgets in one go, plus explicit
    rules for Confluence 8.x / Jira 9.x chrome: header, sidebars, page tree, tables, cell
    highlights, macros, code blocks, comments, the TinyMCE editor body, Jira issue view,
    navigator, boards/backlog, dialogs, inline edit, wiki / rich-text editors, dashboards.
