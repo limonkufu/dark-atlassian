@@ -210,16 +210,60 @@ html[data-ctp-mocha] {
     background-color: var(--ctp-surface1) !important; color: var(--ctp-text) !important;
   }
   .jira-issue-status-lozenge-yellow, .jira-issue-status-lozenge-indeterminate, .jira-issue-status-lozenge.jira-issue-status-lozenge-yellow, .jira-issue-status-lozenge.jira-issue-status-lozenge-indeterminate, .aui-lozenge.jira-issue-status-lozenge-yellow,
-  .aui-lozenge.jira-issue-status-lozenge-indeterminate, .jira-issue-status-lozenge.jira-issue-status-lozenge-blue, .jira-issue-status-lozenge-blue {
-    background-color: color-mix(in srgb, var(--ctp-blue) 28%, var(--ctp-base)) !important; color: var(--ctp-blue) !important;
+  .aui-lozenge.jira-issue-status-lozenge-indeterminate, .jira-issue-status-lozenge.jira-issue-status-lozenge-blue, .jira-issue-status-lozenge-blue,
+  .jira-issue-status-lozenge.jira-issue-status-lozenge-inprogress {
+    background-color: color-mix(in srgb, var(--ctp-blue) 20%, var(--ctp-base)) !important; color: var(--ctp-blue) !important;
   }
-  .jira-issue-status-lozenge-green, .jira-issue-status-lozenge-done, .jira-issue-status-lozenge.jira-issue-status-lozenge-green, .jira-issue-status-lozenge.jira-issue-status-lozenge-done, .aui-lozenge.jira-issue-status-lozenge-green, .aui-lozenge.jira-issue-status-lozenge-done {
+  .jira-issue-status-lozenge-green, .jira-issue-status-lozenge-done, .jira-issue-status-lozenge.jira-issue-status-lozenge-green, .jira-issue-status-lozenge.jira-issue-status-lozenge-done, .aui-lozenge.jira-issue-status-lozenge-green, .aui-lozenge.jira-issue-status-lozenge-done,
+  .jira-issue-status-lozenge.jira-issue-status-lozenge-success {
     background-color: color-mix(in srgb, var(--ctp-green) 28%, var(--ctp-base)) !important; color: var(--ctp-green) !important;
   }
   .jira-issue-status-lozenge-brown, .jira-issue-status-lozenge.jira-issue-status-lozenge-brown, .aui-lozenge.jira-issue-status-lozenge-brown { background-color: color-mix(in srgb, var(--ctp-peach) 28%, var(--ctp-base)) !important; color: var(--ctp-peach) !important; }
   .jira-issue-status-lozenge-warm-red, .jira-issue-status-lozenge.jira-issue-status-lozenge-warm-red, .aui-lozenge.jira-issue-status-lozenge-warm-red { background-color: color-mix(in srgb, var(--ctp-red) 28%, var(--ctp-base)) !important; color: var(--ctp-red) !important; }
   .jira-issue-status-lozenge-tooltip, .jira-issue-status-tooltip, .jira-issue-status-tooltip-title, .jira-issue-status-tooltip-desc { background: var(--ctp-crust) !important; color: var(--ctp-text) !important; }
   .jira-issue-status-tooltip-desc { color: var(--ctp-subtext0) !important; }
+
+  /* Jira 9's current-status button carries the category on the trigger. */
+  #opsbar-transitions_more {
+    --ctp-status-color: var(--ctp-text);
+    --ctp-status-background: var(--ctp-surface1);
+  }
+  #opsbar-transitions_more.opsbar-transitions__status-category_indeterminate {
+    --ctp-status-color: var(--ctp-blue);
+    --ctp-status-background: color-mix(in srgb, var(--ctp-blue) 20%, var(--ctp-base));
+  }
+  #opsbar-transitions_more.opsbar-transitions__status-category_done {
+    --ctp-status-color: var(--ctp-green);
+    --ctp-status-background: color-mix(in srgb, var(--ctp-green) 20%, var(--ctp-base));
+  }
+  #opsbar-transitions_more[class*="opsbar-transitions__status-category_"] {
+    background: var(--ctp-status-background) !important;
+    color: var(--ctp-status-color) !important;
+  }
+  #opsbar-transitions_more[class*="opsbar-transitions__status-category_"]:is(:hover, :focus, [aria-expanded="true"]) {
+    background: color-mix(in srgb, var(--ctp-status-color) 24%, var(--ctp-base)) !important;
+  }
+
+  /* The Story Burn-up plugin uses an inline white surface and a native progress
+   * element. Theme it explicitly, including before the inline scan finishes. */
+  [id="story.burn-up"] .mod-content > div {
+    background-color: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+  [id="story.burn-up"] :is(table, th, td) {
+    background-color: transparent !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  [id="story.burn-up"] small { color: var(--ctp-subtext0) !important; }
+  [id="story.burn-up"] progress {
+    accent-color: var(--ctp-green);
+    color: var(--ctp-green) !important;
+    background-color: var(--ctp-surface1) !important;
+  }
+  [id="story.burn-up"] progress::-webkit-progress-bar { background-color: var(--ctp-surface1) !important; }
+  [id="story.burn-up"] progress::-webkit-progress-value { background-color: var(--ctp-green) !important; }
+  [id="story.burn-up"] progress::-moz-progress-bar { background-color: var(--ctp-green) !important; }
 
   /* rendered wiki content (description, comments) */
   .user-content-block, .user-content-block p, .user-content-block li, .user-content-block td, .user-content-block th, .user-content-block dd, .user-content-block dt, .user-content-block span, .user-content-block div, .user-content-block blockquote,
@@ -242,6 +286,9 @@ html[data-ctp-mocha] {
   .code-tag { color: var(--ctp-red) !important; }
   .code-macro, .code-xml, .code-java, .code-javascript, .code-sql { color: var(--ctp-text) !important; }
   .user-content-block blockquote, blockquote { border-left-color: var(--ctp-surface2) !important; color: var(--ctp-subtext1) !important; background: transparent !important; }
+  /* Pasted emails / wiki quotes still contain <font color> presentation tags.
+   * Inherit the themed text or link colour without changing saved content. */
+  :is(.user-content-block, .rendered-content, .wiki-preview, .description-page) font[color] { color: inherit !important; }
   .user-content-block a, .user-content-block a:link, .user-content-block a:visited, .rendered-content a, .wiki-preview a, .description-page a { color: var(--ctp-blue) !important; }
   .user-content-block a:hover, .rendered-content a:hover, .wiki-preview a:hover { color: var(--ctp-sapphire) !important; }
   .user-content-block .aui-lozenge, .user-content-block .jira-issue-macro-lozenge, .user-content-block .jira-issue-macro, .jira-issue-macro, .jira-issue-macro-key, .jira-issue-macro-lozenge { border: 0 !important; }
