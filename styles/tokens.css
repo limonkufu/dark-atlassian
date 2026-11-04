@@ -1,7 +1,7 @@
-/* Catppuccin Mocha palette + Atlassian design tokens (AUI 9 `--aui-*` and
+/* Catppuccin Mocha palette + Atlassian design tokens (AUI `--aui-*` and
  * ADS `--ds-*`). Everything is scoped under html[data-ctp-mocha] so removing
- * the attribute (or the <style>) restores the light theme instantly. */
-html[data-ctp-mocha] {
+ * the attribute (or the <style>) restores Atlassian's appearance instantly. */
+html[data-ctp-mocha], html[data-ctp-mocha][data-ctp-native-dark] {
   --ctp-rosewater: #f5e0dc; --ctp-flamingo: #f2cdcd; --ctp-pink: #f5c2e7; --ctp-mauve: #cba6f7;
   --ctp-red: #f38ba8; --ctp-maroon: #eba0ac; --ctp-peach: #fab387; --ctp-yellow: #f9e2af;
   --ctp-green: #a6e3a1; --ctp-teal: #94e2d5; --ctp-sky: #89dceb; --ctp-sapphire: #74c7ec;
@@ -27,7 +27,7 @@ html[data-ctp-mocha] {
 
   color-scheme: dark;
 
-  /* ---------------- AUI 9 theme variables ---------------- */
+  /* ---------------- AUI theme variables ---------------- */
   --aui-shadow1: rgba(0, 0, 0, 0.35) !important;
   --aui-shadow2: rgba(0, 0, 0, 0.55) !important;
   --aui-blanket: rgba(17, 17, 27, 0.65) !important;
@@ -768,46 +768,50 @@ html[data-ctp-mocha] {
   & { scrollbar-color: var(--ctp-surface2) var(--ctp-mantle); }
   * { scrollbar-color: var(--ctp-surface2) var(--ctp-mantle); }
 
-  a, a:link, a:visited { color: var(--ctp-blue) !important; }
-  a:hover, a:focus { color: var(--ctp-sapphire) !important; }
-  a:active { color: var(--ctp-sky) !important; }
+  /* Native Jira owns component states and semantic colours via the tokens
+   * above. Generic light-page overrides would flatten those distinctions. */
+  &:not([data-ctp-native-dark]) {
+    a, a:link, a:visited { color: var(--ctp-blue) !important; }
+    a:hover, a:focus { color: var(--ctp-sapphire) !important; }
+    a:active { color: var(--ctp-sky) !important; }
 
-  h1, h2, h3, h4, h5, h6 { color: var(--ctp-text) !important; }
-  p, li, dd, dt, td, th, span, div, label, legend, small, figcaption { border-color: var(--ctp-surface1); }
-  hr { border-color: var(--ctp-surface1) !important; background-color: var(--ctp-surface1) !important; color: var(--ctp-surface1) !important; }
-  blockquote { border-color: var(--ctp-surface1) !important; color: var(--ctp-subtext1) !important; background: transparent !important; }
-  code, kbd, samp, tt, pre, var {
-    background-color: var(--ctp-mantle) !important;
-    color: var(--ctp-text) !important;
-    border-color: var(--ctp-surface1) !important;
-  }
-  mark { background: color-mix(in srgb, var(--ctp-yellow) 35%, var(--ctp-base)) !important; color: var(--ctp-text) !important; }
-  fieldset, legend { border-color: var(--ctp-surface1) !important; color: var(--ctp-text) !important; }
-  table { border-color: var(--ctp-surface1) !important; }
-  th, td { border-color: var(--ctp-surface1) !important; }
-  th { color: var(--ctp-subtext1) !important; }
-  caption { color: var(--ctp-subtext0) !important; }
-  iframe { color-scheme: dark; }
+    h1, h2, h3, h4, h5, h6 { color: var(--ctp-text) !important; }
+    p, li, dd, dt, td, th, span, div, label, legend, small, figcaption { border-color: var(--ctp-surface1); }
+    hr { border-color: var(--ctp-surface1) !important; background-color: var(--ctp-surface1) !important; color: var(--ctp-surface1) !important; }
+    blockquote { border-color: var(--ctp-surface1) !important; color: var(--ctp-subtext1) !important; background: transparent !important; }
+    code, kbd, samp, tt, pre, var {
+      background-color: var(--ctp-mantle) !important;
+      color: var(--ctp-text) !important;
+      border-color: var(--ctp-surface1) !important;
+    }
+    mark { background: color-mix(in srgb, var(--ctp-yellow) 35%, var(--ctp-base)) !important; color: var(--ctp-text) !important; }
+    fieldset, legend { border-color: var(--ctp-surface1) !important; color: var(--ctp-text) !important; }
+    table { border-color: var(--ctp-surface1) !important; }
+    th, td { border-color: var(--ctp-surface1) !important; }
+    th { color: var(--ctp-subtext1) !important; }
+    caption { color: var(--ctp-subtext0) !important; }
+    iframe { color-scheme: dark; }
 
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]):not([type="file"]):not([type="color"]),
-  textarea, select {
-    background-color: var(--ctp-mantle) !important;
-    color: var(--ctp-text) !important;
-    border-color: var(--ctp-surface1) !important;
-  }
-  input:focus, textarea:focus, select:focus { border-color: var(--ctp-blue) !important; box-shadow: 0 0 0 1px var(--ctp-blue) !important; outline-color: var(--ctp-blue) !important; }
-  option, optgroup { background-color: var(--ctp-mantle) !important; color: var(--ctp-text) !important; }
-  ::placeholder { color: var(--ctp-overlay1) !important; opacity: 1; }
-  input[type="submit"], input[type="button"], button {
-    color: var(--ctp-text);
-  }
-  :focus-visible { outline-color: var(--ctp-blue) !important; }
-  input[type="checkbox"], input[type="radio"] { accent-color: var(--ctp-blue); }
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]):not([type="file"]):not([type="color"]),
+    textarea, select {
+      background-color: var(--ctp-mantle) !important;
+      color: var(--ctp-text) !important;
+      border-color: var(--ctp-surface1) !important;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--ctp-blue) !important; box-shadow: 0 0 0 1px var(--ctp-blue) !important; outline-color: var(--ctp-blue) !important; }
+    option, optgroup { background-color: var(--ctp-mantle) !important; color: var(--ctp-text) !important; }
+    ::placeholder { color: var(--ctp-overlay1) !important; opacity: 1; }
+    input[type="submit"], input[type="button"], button {
+      color: var(--ctp-text);
+    }
+    :focus-visible { outline-color: var(--ctp-blue) !important; }
+    input[type="checkbox"], input[type="radio"] { accent-color: var(--ctp-blue); }
 
-  /* common inline "dark text" written by editors */
-  [style*="color: rgb(0, 0, 0)"], [style*="color: rgb(0,0,0)"], [style*="color: #000"], [style*="color:#000"],
-  [style*="color: black"], [style*="color: rgb(23, 43, 77)"], [style*="color: rgb(23,43,77)"], [style*="color: #172b4d"],
-  [style*="color: rgb(51, 51, 51)"], [style*="color: #333"], [style*="color: rgb(9, 30, 66)"], [style*="color: #091e42"] {
-    color: var(--ctp-text) !important;
+    /* common inline "dark text" written by editors */
+    [style*="color: rgb(0, 0, 0)"], [style*="color: rgb(0,0,0)"], [style*="color: #000"], [style*="color:#000"],
+    [style*="color: black"], [style*="color: rgb(23, 43, 77)"], [style*="color: rgb(23,43,77)"], [style*="color: #172b4d"],
+    [style*="color: rgb(51, 51, 51)"], [style*="color: #333"], [style*="color: rgb(9, 30, 66)"], [style*="color: #091e42"] {
+      color: var(--ctp-text) !important;
+    }
   }
 }

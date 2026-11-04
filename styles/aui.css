@@ -1,5 +1,6 @@
-/* AUI 9 components (shared by Confluence and Jira). */
-html[data-ctp-mocha] {
+/* Legacy AUI components (Confluence 8.5 / Jira without native dark mode).
+ * Jira's native dark components use the palette tokens directly. */
+html[data-ctp-mocha]:not([data-ctp-native-dark]) {
 
   /* ---------------- app header ---------------- */
   #header, #header .aui-header, .aui-header, nav.aui-header, .aui-header-inner, #header .aui-header-inner,

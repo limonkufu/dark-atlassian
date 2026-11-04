@@ -2,10 +2,12 @@
  *
  * Layers, from strongest to weakest:
  *   1. styles/*.css   hand-written Catppuccin Mocha rules (tokens + AUI + product)
- *   2. dynamic layer  every page stylesheet is scanned and light colours are
+ *   2. dynamic layer  legacy page stylesheets are scanned and light colours are
  *                     rewritten to dark equivalents (covers plugins/unknown pages)
- *   3. inline layer   inline style="" colours are remapped in view mode only
- *                     (never inside editors, so page content is never changed)
+ *   3. inline layer   inline style="" colours are remapped through CSS rules
+ *                     (page content is never changed, including in editors)
+ * Jira's native dark documents use only tokens and targeted compatibility CSS;
+ * the automatic light-theme conversion layers are skipped for those documents.
  */
 (() => {
   'use strict';
@@ -21,7 +23,9 @@
   const STYLE_ID = 'ctp-mocha-theme';
   const INLINE_ID = 'ctp-mocha-inline';
   const FRAME_ATTR = 'data-ctp-frame';
+  const NATIVE_ATTR = 'data-ctp-native-dark';
   const FILES = ['styles/tokens.css', 'styles/aui.css', 'styles/' + site + '.css'];
+  if (site === 'jira') FILES.push('styles/jira-compat.css');
   const LS_ACTIVE = 'ctpMocha.active';
   const LS_CSS = 'ctpMocha.css.' + site;
   const LS_BUSTER = 'ctpMocha.buster';
@@ -234,6 +238,22 @@
 
   function removeStyle(id) { removeStyleIn(document, id); }
 
+  // Detect the resolved colour mode, not data-theme's list of available themes.
+  // Never change Jira's own attributes or persisted appearance preference.
+  function nativeDark(doc) {
+    return site === 'jira' && doc.documentElement?.getAttribute('data-color-mode') === 'dark';
+  }
+
+  function markThemeIn(doc, on) {
+    const root = doc.documentElement;
+    root.toggleAttribute('data-ctp-mocha', on);
+    root.toggleAttribute(NATIVE_ATTR, on && nativeDark(doc));
+    if (on && nativeDark(doc)) {
+      removeStyleIn(doc, INLINE_ID);
+      doc.querySelectorAll('style[data-ctp-dyn]').forEach(el => el.remove());
+    }
+  }
+
   /* Keep [dynamic, inline, theme] as the last children of the host so they
    * win cascade ties against stylesheets the page adds later. */
   function bringToFrontIn(doc) {
@@ -338,6 +358,7 @@
       pending = null;
       if (!enabled) return;
       for (const doc of liveDocs()) {
+        if (nativeDark(doc)) continue;
         for (const sheet of doc.styleSheets) {
           const node = sheet.ownerNode;
           if (!node || (node.hasAttribute && node.hasAttribute('data-ctp'))) continue;
@@ -404,6 +425,7 @@
     const MAX_RULES = 4000;
 
     function consider(el) {
+      if (nativeDark(el.ownerDocument)) return;
       const text = el.getAttribute('style');
       if (!text || rules.has(text)) return;
       if (!/color|background/i.test(text)) return;
@@ -413,6 +435,7 @@
     }
 
     function process(root) {
+      if (nativeDark(root.nodeType === 9 ? root : root.ownerDocument)) return;
       if (root.nodeType === 1) {
         if (root.hasAttribute('style')) consider(root);
         root.querySelectorAll('[style*="color"],[style*="background"]').forEach(consider);
@@ -429,7 +452,9 @@
       const out = [];
       for (const [text, decl] of rules) if (decl) out.push('[style=' + cssEscapeAttr(text) + ']{' + decl + '}');
       const text = out.join('\n');
-      for (const doc of liveDocs()) ensureStyleIn(doc, INLINE_ID, text);
+      for (const doc of liveDocs()) {
+        if (!nativeDark(doc)) ensureStyleIn(doc, INLINE_ID, text);
+      }
     }
 
     function flush() {
@@ -442,9 +467,14 @@
     }
 
     return {
-      enable() { enabled = true; queue.add(document); if (!pending) pending = setTimeout(flush, 0); },
+      enable() { enabled = true; dirty = true; queue.add(document); if (!pending) pending = setTimeout(flush, 0); },
       disable() { enabled = false; queue.clear(); if (pending) { clearTimeout(pending); pending = null; } removeStyle(INLINE_ID); },
-      queue(node) { if (!enabled || !node) return; queue.add(node); if (!pending) pending = setTimeout(flush, 40); },
+      queue(node) {
+        if (!enabled || !node) return;
+        if (node.nodeType === 9) dirty = true; // a newly themed frame needs the cached rules too
+        queue.add(node);
+        if (!pending) pending = setTimeout(flush, 40);
+      },
       /* attribute change: only the element itself, never its subtree */
       queueSelf(el) { if (!enabled || !el || el.nodeType !== 1) return; consider(el); if (dirty && !pending) pending = setTimeout(flush, 40); }
     };
@@ -454,22 +484,33 @@
   /* Same-origin iframes (editor bodies, gadgets) get the theme too        */
   /* ------------------------------------------------------------------ */
   const frames = (() => {
+    const observers = new WeakMap();
     function docOf(iframe) {
       try { return iframe.contentDocument; } catch (_) { return null; }
     }
     function apply(iframe) {
       const doc = docOf(iframe);
       if (!doc || !doc.documentElement) return;
+      const previous = observers.get(iframe);
+      if (previous && (previous.doc !== doc || selfThemed(doc))) {
+        previous.observer.disconnect();
+        observers.delete(iframe);
+      }
       if (selfThemed(doc)) { docs.delete(doc); return; }
+      if (!observers.has(iframe)) {
+        const observer = new MutationObserver(() => apply(iframe));
+        observer.observe(doc.documentElement, { attributes: true, attributeFilter: ['data-color-mode', 'data-theme'] });
+        observers.set(iframe, { doc, observer });
+      }
       if (active && cssText) {
         docs.add(doc);
-        doc.documentElement.setAttribute('data-ctp-mocha', 'true');
+        markThemeIn(doc, true);
         ensureStyleIn(doc, STYLE_ID, cssText);
         dyn.refresh();
         inline.queue(doc);
       } else {
         docs.delete(doc);
-        doc.documentElement.removeAttribute('data-ctp-mocha');
+        markThemeIn(doc, false);
         for (const id of [STYLE_ID, INLINE_ID]) removeStyleIn(doc, id);
         doc.querySelectorAll('style[data-ctp-dyn]').forEach(el => el.remove());
       }
@@ -509,15 +550,13 @@
   function applyTheme(on) {
     active = on;
     ls.set(LS_ACTIVE, on ? '1' : '0');
-    const root = document.documentElement;
+    markThemeIn(document, on);
     if (on) {
-      root.setAttribute('data-ctp-mocha', 'true');
       if (cssText) ensureStyle(STYLE_ID, cssText);
       dyn.enable();
       inline.enable();
       bringToFront();
     } else {
-      root.removeAttribute('data-ctp-mocha');
       removeStyle(STYLE_ID);
       removeStyle(INLINE_ID);
       dyn.disable();
@@ -575,26 +614,36 @@
   function observe() {
     const mo = new MutationObserver((records) => {
       let stylesChanged = false;
+      let themeChanged = false;
       for (const rec of records) {
-        if (rec.type === 'attributes') { inline.queueSelf(rec.target); continue; }
+        if (rec.type === 'attributes') {
+          if (rec.attributeName === 'style') inline.queueSelf(rec.target);
+          else if (rec.target === document.documentElement) themeChanged = true;
+          continue;
+        }
         for (const node of rec.addedNodes) {
           if (node.nodeType !== 1) continue;
           if (node.hasAttribute('data-ctp')) continue;
           const tag = node.tagName;
           if (tag === 'STYLE' || (tag === 'LINK' && /stylesheet/i.test(node.rel || ''))) stylesChanged = true;
           else if (tag === 'HTML' || tag === 'HEAD' || tag === 'BODY') stylesChanged = true;
-          if (tag === 'HTML') claimFrame();   // document.write(): before the parent sees the load
+          if (tag === 'HTML') {
+            claimFrame();   // document.write(): before the parent sees the load
+            themeChanged = true;
+          }
           frames.added(node);
           inline.queue(node);
         }
       }
+      if (themeChanged && active) applyTheme(true);
       if (stylesChanged && active) {
         if (cssText && !document.getElementById(STYLE_ID)) ensureStyle(STYLE_ID, cssText);
         bringToFront();
         dyn.refresh();
       }
     });
-    mo.observe(document, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+    mo.observe(document, { childList: true, subtree: true, attributes: true,
+      attributeFilter: ['style', 'data-color-mode', 'data-theme'] });
 
     // Stylesheets finishing their download also change the cascade.
     document.addEventListener('load', (e) => {
@@ -607,7 +656,7 @@
       setInterval(() => {
         const reclaimed = claimFrame();
         if (active && cssText && (reclaimed || !document.getElementById(STYLE_ID))) {
-          document.documentElement.setAttribute('data-ctp-mocha', 'true');
+          markThemeIn(document, true);
           ensureStyle(STYLE_ID, cssText);
           dyn.refresh();
         }

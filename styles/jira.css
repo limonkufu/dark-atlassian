@@ -1,5 +1,6 @@
-/* Jira Data Center (9.x) product styles. */
-html[data-ctp-mocha] {
+/* Jira Data Center legacy/light fallback, including Jira 11.3.12.
+ * Native dark mode uses tokens.css and jira-compat.css instead. */
+html[data-ctp-mocha]:not([data-ctp-native-dark]) {
 
   /* ---------------- header / look-and-feel overrides ---------------- */
   #header .aui-header, #header .aui-header .aui-nav > li > a, #header .aui-header a, #header .aui-header .aui-dropdown2-trigger, #header .aui-header .aui-nav-link,
@@ -201,70 +202,6 @@ html[data-ctp-mocha] {
   .type-icon, .icon-type, .priority-icon, .status-icon, .aui-icon.icon-type, .issue-type-icon, .jira-issue-type-icon, .jira-issue-status-lozenge .aui-icon, .jira-issue-priority-icon, .aui-avatar-xsmall .aui-avatar-inner img { background-color: transparent !important; }
   .issue-header .aui-page-header-image .aui-avatar, .issue-header-content .aui-avatar, #project-avatar, .issue-header .aui-avatar-inner img, .aui-avatar-project img, .aui-avatar-project .aui-avatar-inner { background: transparent !important; border-color: transparent !important; }
 
-  /* status lozenges (jira-issue-status-lozenge-*) */
-  .jira-issue-status-lozenge, .jira-issue-status-lozenge.aui-lozenge, .status-lozenge .aui-lozenge, .status-lozenge, .jira-issue-status-lozenge-max-width-medium, .aui-lozenge.jira-issue-status-lozenge {
-    background-color: var(--ctp-surface1) !important; color: var(--ctp-text) !important; border: 0 !important;
-  }
-  .jira-issue-status-lozenge-blue-gray, .jira-issue-status-lozenge-new, .jira-issue-status-lozenge.jira-issue-status-lozenge-blue-gray, .jira-issue-status-lozenge.jira-issue-status-lozenge-new, .aui-lozenge.jira-issue-status-lozenge-blue-gray,
-  .jira-issue-status-lozenge-medium-gray, .jira-issue-status-lozenge-undefined, .jira-issue-status-lozenge.jira-issue-status-lozenge-medium-gray, .jira-issue-status-lozenge.jira-issue-status-lozenge-undefined {
-    background-color: var(--ctp-surface1) !important; color: var(--ctp-text) !important;
-  }
-  .jira-issue-status-lozenge-yellow, .jira-issue-status-lozenge-indeterminate, .jira-issue-status-lozenge.jira-issue-status-lozenge-yellow, .jira-issue-status-lozenge.jira-issue-status-lozenge-indeterminate, .aui-lozenge.jira-issue-status-lozenge-yellow,
-  .aui-lozenge.jira-issue-status-lozenge-indeterminate, .jira-issue-status-lozenge.jira-issue-status-lozenge-blue, .jira-issue-status-lozenge-blue,
-  .jira-issue-status-lozenge.jira-issue-status-lozenge-inprogress {
-    background-color: color-mix(in srgb, var(--ctp-blue) 20%, var(--ctp-base)) !important; color: var(--ctp-blue) !important;
-  }
-  .jira-issue-status-lozenge-green, .jira-issue-status-lozenge-done, .jira-issue-status-lozenge.jira-issue-status-lozenge-green, .jira-issue-status-lozenge.jira-issue-status-lozenge-done, .aui-lozenge.jira-issue-status-lozenge-green, .aui-lozenge.jira-issue-status-lozenge-done,
-  .jira-issue-status-lozenge.jira-issue-status-lozenge-success {
-    background-color: color-mix(in srgb, var(--ctp-green) 28%, var(--ctp-base)) !important; color: var(--ctp-green) !important;
-  }
-  .jira-issue-status-lozenge-brown, .jira-issue-status-lozenge.jira-issue-status-lozenge-brown, .aui-lozenge.jira-issue-status-lozenge-brown { background-color: color-mix(in srgb, var(--ctp-peach) 28%, var(--ctp-base)) !important; color: var(--ctp-peach) !important; }
-  .jira-issue-status-lozenge-warm-red, .jira-issue-status-lozenge.jira-issue-status-lozenge-warm-red, .aui-lozenge.jira-issue-status-lozenge-warm-red { background-color: color-mix(in srgb, var(--ctp-red) 28%, var(--ctp-base)) !important; color: var(--ctp-red) !important; }
-  .jira-issue-status-lozenge-tooltip, .jira-issue-status-tooltip, .jira-issue-status-tooltip-title, .jira-issue-status-tooltip-desc { background: var(--ctp-crust) !important; color: var(--ctp-text) !important; }
-  .jira-issue-status-tooltip-desc { color: var(--ctp-subtext0) !important; }
-
-  /* Jira 9's current-status button carries the category on the trigger. */
-  #opsbar-transitions_more {
-    --ctp-status-color: var(--ctp-text);
-    --ctp-status-background: var(--ctp-surface1);
-  }
-  #opsbar-transitions_more.opsbar-transitions__status-category_indeterminate {
-    --ctp-status-color: var(--ctp-blue);
-    --ctp-status-background: color-mix(in srgb, var(--ctp-blue) 20%, var(--ctp-base));
-  }
-  #opsbar-transitions_more.opsbar-transitions__status-category_done {
-    --ctp-status-color: var(--ctp-green);
-    --ctp-status-background: color-mix(in srgb, var(--ctp-green) 20%, var(--ctp-base));
-  }
-  #opsbar-transitions_more[class*="opsbar-transitions__status-category_"] {
-    background: var(--ctp-status-background) !important;
-    color: var(--ctp-status-color) !important;
-  }
-  #opsbar-transitions_more[class*="opsbar-transitions__status-category_"]:is(:hover, :focus, [aria-expanded="true"]) {
-    background: color-mix(in srgb, var(--ctp-status-color) 24%, var(--ctp-base)) !important;
-  }
-
-  /* The Story Burn-up plugin uses an inline white surface and a native progress
-   * element. Theme it explicitly, including before the inline scan finishes. */
-  [id="story.burn-up"] .mod-content > div {
-    background-color: var(--ctp-base) !important;
-    color: var(--ctp-text) !important;
-  }
-  [id="story.burn-up"] :is(table, th, td) {
-    background-color: transparent !important;
-    color: var(--ctp-text) !important;
-    border-color: var(--ctp-surface1) !important;
-  }
-  [id="story.burn-up"] small { color: var(--ctp-subtext0) !important; }
-  [id="story.burn-up"] progress {
-    accent-color: var(--ctp-green);
-    color: var(--ctp-green) !important;
-    background-color: var(--ctp-surface1) !important;
-  }
-  [id="story.burn-up"] progress::-webkit-progress-bar { background-color: var(--ctp-surface1) !important; }
-  [id="story.burn-up"] progress::-webkit-progress-value { background-color: var(--ctp-green) !important; }
-  [id="story.burn-up"] progress::-moz-progress-bar { background-color: var(--ctp-green) !important; }
-
   /* rendered wiki content (description, comments) */
   .user-content-block, .user-content-block p, .user-content-block li, .user-content-block td, .user-content-block th, .user-content-block dd, .user-content-block dt, .user-content-block span, .user-content-block div, .user-content-block blockquote,
   .user-content-block table, .user-content-block tr, .description-page, .description-page p, .rendered-content, .rendered-content p, .preview-content, .wiki-preview, #description-val .user-content-block, .flooded .user-content-block { color: var(--ctp-text); border-color: var(--ctp-surface1); }
@@ -286,11 +223,6 @@ html[data-ctp-mocha] {
   .code-tag { color: var(--ctp-red) !important; }
   .code-macro, .code-xml, .code-java, .code-javascript, .code-sql { color: var(--ctp-text) !important; }
   .user-content-block blockquote, blockquote { border-left-color: var(--ctp-surface2) !important; color: var(--ctp-subtext1) !important; background: transparent !important; }
-  /* Pasted emails / wiki quotes still contain <font color> presentation tags.
-   * Inherit the themed text or link colour without changing saved content. */
-  :is(.user-content-block, .rendered-content, .wiki-preview, .description-page) font[color] { color: inherit !important; }
-  .user-content-block a, .user-content-block a:link, .user-content-block a:visited, .rendered-content a, .wiki-preview a, .description-page a { color: var(--ctp-blue) !important; }
-  .user-content-block a:hover, .rendered-content a:hover, .wiki-preview a:hover { color: var(--ctp-sapphire) !important; }
   .user-content-block .aui-lozenge, .user-content-block .jira-issue-macro-lozenge, .user-content-block .jira-issue-macro, .jira-issue-macro, .jira-issue-macro-key, .jira-issue-macro-lozenge { border: 0 !important; }
   .user-content-block .jira-issue-macro, .jira-issue-macro, .jira-issue-macro-key, .jira-issue-macro-key a { background: transparent !important; color: var(--ctp-blue) !important; }
   .user-content-block img.emoticon, .emoticon, .jira-emoticon { background: transparent !important; }
@@ -318,7 +250,7 @@ html[data-ctp-mocha] {
 }
 
 /* Jira part 2: editing, navigator, boards, dashboards. */
-html[data-ctp-mocha] {
+html[data-ctp-mocha]:not([data-ctp-native-dark]) {
 
   /* ---------------- editing: dialogs, inline edit, wiki/rich text editor ---------------- */
   .jira-dialog, .jira-dialog-core, .jira-dialog-content, .jira-dialog-core-content, .jira-dialog .form-body, .jira-dialog .content-body, .jira-dialog-content .form-body, .jira-dialog .aui, .jira-dialog form, .jira-dialog .dialog-content,
@@ -552,7 +484,7 @@ html[data-ctp-mocha] {
 }
 
 /* Jira part 3: issue navigator, boards/backlog, dashboards, misc. */
-html[data-ctp-mocha] {
+html[data-ctp-mocha]:not([data-ctp-native-dark]) {
 
   /* ---------------- issue navigator / search ---------------- */
   .navigator-container, .navigator-sidebar, .navigator-content, .navigator-body, .navigator-search, .search-container, .results-panel, .list-panel, .detail-panel, .split-view .list-content, .list-content, .issue-list, .list-results-panel,
@@ -746,7 +678,7 @@ html[data-ctp-mocha] {
 }
 
 /* Jira part 4: boards & backlog (Jira Software, ghx-*), dashboards, misc. */
-html[data-ctp-mocha] {
+html[data-ctp-mocha]:not([data-ctp-native-dark]) {
   #ghx-header, #ghx-operations, #ghx-controls, #ghx-view-selector, #ghx-modes-tools, #ghx-board-name, #ghx-header h1, #ghx-header h2, #ghx-content-group, #ghx-content-main, #ghx-work, #ghx-plan, #ghx-pool, #ghx-pool-column, #ghx-rabid, #ghx-board,
   .ghx-columns, .ghx-swimlane, .ghx-swimlane .ghx-columns, #ghx-column-headers, .ghx-column-headers, .ghx-column-header-group, #ghx-backlog, .ghx-backlog, .ghx-backlog-container, .ghx-backlog-column, .ghx-backlog-group, .ghx-sprint-group, .ghx-plan-group,
   .ghx-plan-extra-fields, .ghx-quick-content, .ghx-controls-work, .ghx-controls-filters, .ghx-filter-buttons, .ghx-view-selector, .ghx-quick-filters, .ghx-modes-tools, .ghx-board-header, .ghx-header, .ghx-content-main, .ghx-content-group, .ghx-work, .ghx-plan, .ghx-pool, .ghx-tab-content, .ghx-empty-column-note,
